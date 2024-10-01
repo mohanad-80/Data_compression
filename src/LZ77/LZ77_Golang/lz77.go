@@ -18,43 +18,51 @@ func findTheLongestMatch(p1, p2, lookaheadSize int, input *string) (int, int, st
 
 	// looking for a match in the search window
 	for i := p1; i < p2; i++ {
+		// not a match
+		if s[i] != s[p2] {
+			continue
+		}
 		// found match
-		if s[i] == s[p2] {
-			length := 1
-			tempPtr := p2 + 1
-			// check for more characters in the match
-			for j := i + 1; ; j++ {
-				// case were the pointer is in both the pattern and look-ahead buffers
-				// AND the pointed at chars are equal
-				if tempPtr < min(len(s)-1, p2+lookaheadSize) && s[j] == s[tempPtr] {
-					length++
-					tempPtr++
-					continue
-				}
+		length := 1
+		tempPtr := p2 + 1
+		// check for more characters in the match
+		for j := i + 1; ; j++ {
+			// case were the pointer is in both the pattern and look-ahead buffers
+			// AND the pointed at chars are equal
+			if tempPtr < min(len(s)-1, p2+lookaheadSize) && s[j] == s[tempPtr] {
+				length++
+				tempPtr++
+				continue
+			}
 
-				// case were the pointer is in the pattern buffer
-				// AND the pointed at chars are equal
-				if tempPtr < len(s)-1 && s[j] == s[tempPtr] {
-					length++
-				}
+			// case were the pointer is in the pattern buffer
+			// but hit the end of the look-ahead buffer so we still
+			// can count this char in the length
+			// AND the pointed at chars are equal
+			if tempPtr < len(s)-1 && s[j] == s[tempPtr] {
+				length++
+			}
 
-				// when they are not equal OR we hit the end of
-				// the pattern or the look-ahead buffers
-				if length >= maxLength {
-					maxLength = length
-					offset = p2 - i
-					// we check if we are pass the last char in the buffer
-					// we do not encode a char in the triple since the last
-					// char is encoded in the offset and length.
-					if tempPtr > len(s)-1 {
-						nextCharacter = ""
-					} else {
-						nextCharacter = string(s[p2+length])
-					}
-				}
+			// if the match is not the longest do not count it
+			if length < maxLength {
 				break
 			}
+
+			// when the pointed at chars are not equal
+			// OR we hit the end of the pattern or the look-ahead buffers
+			maxLength = length
+			offset = p2 - i
+			// we check if we are pass the last char in the buffer
+			// we do not encode a char in the triple since the last
+			// char is encoded in the offset and length.
+			if tempPtr > len(s)-1 {
+				nextCharacter = ""
+			} else {
+				nextCharacter = string(s[p2+length])
+			}
+			break
 		}
+
 	}
 
 	return offset, maxLength, nextCharacter
