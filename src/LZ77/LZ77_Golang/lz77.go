@@ -10,59 +10,65 @@ type triple struct {
 var LookaheadSize = 6
 var SearchWindowSize = 7
 
-func findTheLongestMatch(p1, p2, lookaheadSize int, input *string) (int, int, string) {
+func findMatchLengthAndCodeword(p1, p2, lookaheadSize int, input *string) (int, string) {
 	s := *input
-	maxLength := 0
-	offset := 0
-	nextCharacter := string(s[p2])
+	nextCharacter := ""
+	length := 0
+	tempPtr := p2
 
-	// looking for a match in the search window
-	for i := p1; i < p2; i++ {
-		// not a match
-		if s[i] != s[p2] {
+	for j := p1; ; j++ {
+		// case were the pointer is in both the pattern and look-ahead buffers
+		// AND the pointed at chars are equal
+		if tempPtr < min(len(s)-1, p2+lookaheadSize) && s[j] == s[tempPtr] {
+			length++
+			tempPtr++
 			continue
 		}
-		// found match
-		length := 1
-		tempPtr := p2 + 1
-		// check for more characters in the match
-		for j := i + 1; ; j++ {
-			// case were the pointer is in both the pattern and look-ahead buffers
-			// AND the pointed at chars are equal
-			if tempPtr < min(len(s)-1, p2+lookaheadSize) && s[j] == s[tempPtr] {
-				length++
-				tempPtr++
-				continue
-			}
 
-			// case were the pointer is in the pattern buffer
-			// but hit the end of the look-ahead buffer so we still
-			// can count this char in the length
-			// AND the pointed at chars are equal
-			if tempPtr < len(s)-1 && s[j] == s[tempPtr] {
-				length++
-			}
-
-			// if the match is not the longest do not count it
-			if length < maxLength {
-				break
-			}
-
-			// when the pointed at chars are not equal
-			// OR we hit the end of the pattern or the look-ahead buffers
-			maxLength = length
-			offset = p2 - i
-			// we check if we are pass the last char in the buffer
-			// we do not encode a char in the triple since the last
-			// char is encoded in the offset and length.
-			if tempPtr > len(s)-1 {
-				nextCharacter = ""
-			} else {
-				nextCharacter = string(s[p2+length])
-			}
-			break
+		// case were the pointer is in the pattern buffer
+		// but hit the end of the look-ahead buffer so we
+		// still can count this char in the length
+		// AND the pointed at chars are equal
+		if tempPtr < len(s)-1 && s[j] == s[tempPtr] {
+			length++
 		}
 
+		// last case were we return
+		// when the pointed at chars are not equal
+		// OR we hit the end of the pattern or the look-ahead buffers
+
+		// we check if we are still in the buffer
+		// we encode the current char in the triple otherwise we leave it
+		// empty since the last char is encoded in the offset and length.
+		if tempPtr <= len(s)-1 {
+			nextCharacter = string(s[p2+length])
+		}
+		break
+	}
+
+	return length, nextCharacter
+}
+
+func findTheLongestMatch(searchPtr, lookaheadPtr, lookaheadSize int, pattern *string) (int, int, string) {
+	s := *pattern
+	maxLength := 0
+	offset := 0
+	nextCharacter := string(s[lookaheadPtr])
+
+	// looking for a match in the search window
+	for ; searchPtr < lookaheadPtr; searchPtr++ {
+		// not a match, skip
+		if s[searchPtr] != s[lookaheadPtr] {
+			continue
+		}
+
+		length, char := findMatchLengthAndCodeword(searchPtr, lookaheadPtr, lookaheadSize, pattern)
+
+		if length >= maxLength {
+			maxLength = length
+			offset = lookaheadPtr - searchPtr
+			nextCharacter = char
+		}
 	}
 
 	return offset, maxLength, nextCharacter
@@ -73,7 +79,10 @@ func encode(s string) []*triple {
 	lookaheadPtr, searchPtr := 0, 0
 
 	for lookaheadPtr < len(s) {
-		offset, length, codeword := findTheLongestMatch(searchPtr, lookaheadPtr, LookaheadSize, &s) // use this if you want to have look-ahead limit
+		// use this if you want to have look-ahead limit
+		offset, length, codeword := findTheLongestMatch(searchPtr, lookaheadPtr, LookaheadSize, &s)
+
+		// use this if you do not want look-ahead limit
 		// offset, length, codeword := findTheLongestMatch(searchPtr, lookaheadPtr, len(s)-lookaheadPtr, &s)
 
 		triples = append(triples, &triple{offset: offset, length: length, codeword: codeword})
@@ -106,19 +115,22 @@ func main() {
 	for _, t := range result {
 		fmt.Println(*t)
 	}
-	fmt.Println(decode(result))
+	fmt.Println("decoded :", decode(result))
+	fmt.Println("original:", testString)
 	fmt.Println("=====================================")
 	testString2 := "rararbcrarbc"
 	result = encode(testString2)
 	for _, t := range result {
 		fmt.Println(*t)
 	}
-	fmt.Println(decode(result))
+	fmt.Println("decoded :", decode(result))
+	fmt.Println("original:", testString2)
 	fmt.Println("=====================================")
 	testString3 := "xyxyxyxyxyxyzzzzzzzz"
 	result = encode(testString3)
 	for _, t := range result {
 		fmt.Println(*t)
 	}
-	fmt.Println(decode(result))
+	fmt.Println("decoded :", decode(result))
+	fmt.Println("original:", testString3)
 }
