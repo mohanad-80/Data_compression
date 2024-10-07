@@ -54,9 +54,12 @@ func encode(pattern string) []*tag {
 
 		index := findIn(dictionary, currentWord)
 
+		// if we did not find the currentWord in the dictionary
+		// OR we reached the end of the pattern then add the currentWord
+		// to the dictionary
 		if index == 0 || i == len(pattern)-1 {
 			dictionary = append(dictionary, currentWord)
-			tags = append(tags, &tag{latestFoundIdx, currentWord[len(currentWord)-1:]})
+			tags = append(tags, &tag{latestFoundIdx, string(pattern[i])})
 			currentWord = ""
 		}
 
