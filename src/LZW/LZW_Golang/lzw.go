@@ -46,6 +46,67 @@ func main() {
 	}
 	fmt.Println("decoded :", decode(result, alphabetDict))
 	fmt.Println("original:", testString4)
+	fmt.Println("=====================================")
+	testString5 := "a/bar/array/by/barrayar/bay"
+	result, alphabetDict = encode(testString5)
+	for _, char := range alphabetDict {
+		fmt.Println(char)
+	}
+	for _, t := range result {
+		fmt.Println(t)
+	}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	fmt.Println("original:", testString5)
+	fmt.Println("=====================================")
+	testString6 := "shhi/has/hhi//h/hash/hahish/hahha"
+	result, alphabetDict = encode(testString6)
+	for _, char := range alphabetDict {
+		fmt.Println(char)
+	}
+	for _, t := range result {
+		fmt.Println(t)
+	}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	result, alphabetDict = []int{6, 3, 4, 5, 2, 3, 1, 6, 2, 9, 11, 16, 12, 14, 4, 20, 10, 8, 23, 13}, []string{"a", "/", "h", "i", "s", "t"}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	fmt.Println("original:", testString6)
+	fmt.Println("=====================================")
+	testString7 := "ratatatat/a/rat/at/a/rat"
+	result, alphabetDict = encode(testString7)
+	for _, char := range alphabetDict {
+		fmt.Println(char)
+	}
+	for _, t := range result {
+		fmt.Println(t)
+	}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	result, alphabetDict = []int{3, 1, 4, 6, 8, 4, 2, 1, 2, 5, 10, 6, 11, 13, 6}, []string{"a", "/", "r", "t"}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	fmt.Println("original:", testString7)
+	fmt.Println("=====================================")
+	testString8 := "barrayar/bar/by/barrayar/bay"
+	result, alphabetDict = encode(testString8)
+	for _, char := range alphabetDict {
+		fmt.Println(char)
+	}
+	for _, t := range result {
+		fmt.Println(t)
+	}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	fmt.Println("original:", testString8)
+	fmt.Println("=====================================")
+	testString9 := "THIS/IS/HIS/HIT"
+	result, alphabetDict = encode(testString9)
+	for _, char := range alphabetDict {
+		fmt.Println(char)
+	}
+	for _, t := range result {
+		fmt.Println(t)
+	}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	result, alphabetDict = []int{4, 5, 3, 1, 2, 8, 2, 7, 9, 7, 4}, []string{"S", "/", "I", "T", "H"}
+	fmt.Println("decoded :", decode(result, alphabetDict))
+	fmt.Println("original:", testString9)
 }
 
 func encode(pattern string) ([]int, []string) {
