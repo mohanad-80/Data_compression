@@ -2,17 +2,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LZ77 {
-  static int LookaheadSize = 6;
-  static int SearchWindowSize = 7;
+  private static final int LOOKAHEAD_SIZE = 6;
+  private static final int SEARCH_WINDOW_SIZE = 7;
 
   public List<Triple> encode(String s) {
     List<Triple> triples = new ArrayList<>();
-    int lookaheadPtr = 0, searchPtr = 0;
+    int lookaheadPtr = 0;
+    int searchPtr = 0;
 
     while (lookaheadPtr < s.length()) {
 
       // use this if you want to have look-ahead limit
-      List<Object> values = findTheLongestMatch(searchPtr, lookaheadPtr, this.LookaheadSize, s);
+      List<Object> values = findTheLongestMatch(searchPtr, lookaheadPtr, LZ77.LOOKAHEAD_SIZE, s);
 
       // use this if you do not want look-ahead limit
       // List<Object> values = findTheLongestMatch(searchPtr, lookaheadPtr, s.length()
@@ -24,14 +25,15 @@ public class LZ77 {
       triples.add(new Triple(offset, length, codeword));
 
       lookaheadPtr += length + 1;
-      searchPtr += Math.max(0, lookaheadPtr - this.SearchWindowSize); // use this if you want to have search limit
+      searchPtr += Math.max(0, lookaheadPtr - LZ77.SEARCH_WINDOW_SIZE); // use this if you want to have search limit
     }
 
     return triples;
   }
 
   private List<Object> findTheLongestMatch(int searchPtr, int lookaheadPtr, int lookaheadSize, String s) {
-    int maxLength = 0, offset = 0;
+    int maxLength = 0;
+    int offset = 0;
     char nextCharacter = s.charAt(lookaheadPtr);
 
     // looking for a match in the search window
@@ -64,7 +66,8 @@ public class LZ77 {
     for (int searchWindowPtr = p1;; searchWindowPtr++) {
       // case were the pointer is in both the pattern and look-ahead buffers
       // AND the pointed at chars are equal
-      if ((lookAheadPtr < Math.min(s.length() - 1, p2 + lookaheadSize) && s.charAt(searchWindowPtr) == s.charAt(lookAheadPtr))) {
+      if ((lookAheadPtr < Math.min(s.length() - 1, p2 + lookaheadSize)
+          && s.charAt(searchWindowPtr) == s.charAt(lookAheadPtr))) {
         length++;
         lookAheadPtr++;
         continue;
@@ -95,20 +98,20 @@ public class LZ77 {
   }
 
   public String decode(List<Triple> t) {
-    String result = "";
+    StringBuilder stringBuilder = new StringBuilder();
 
     for (Triple triple : t) {
-      int i = result.length() - triple.getOffset();
+      int i = stringBuilder.length() - triple.getOffset();
       int j = triple.getLength();
 
-      while (i >= 0 && j > 0 && result.length() > 0) {
-        result += result.charAt(i);
+      while (i >= 0 && j > 0 && stringBuilder.length() > 0) {
+        stringBuilder.append(stringBuilder.charAt(i));
         i++;
         j--;
       }
-      result += triple.getCodeword();
+      stringBuilder.append(triple.getCodeword());
     }
 
-    return result;
+    return stringBuilder.toString();
   }
 }
