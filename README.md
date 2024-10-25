@@ -2,7 +2,7 @@
 This repo contains implementation for different data compression algorithms in different programming languages
 
 ## List of algorithms implemented
-- LZ77 (in Golang)
+- LZ77 (in Golang and Java)
 - LZ78 (in Golang)
 - LZW  (in Golang)
 - Huffman (in Golang)
