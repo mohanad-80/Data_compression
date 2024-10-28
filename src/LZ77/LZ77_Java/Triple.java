@@ -1,7 +1,7 @@
 public class Triple {
   private int offset;
   private int length;
-  private char codeword; // This will be a single character string
+  private char codeword;
 
   public Triple(int offset, int length, char codeword) {
     this.offset = offset;
