@@ -3,69 +3,34 @@ package main
 import "fmt"
 
 func main() {
-	testString := "ffcabracadabrarrarradff"
-	result, alphabetDict := encode(testString)
+	testStrings := []string{"ffcabracadabrarrarradff", "rararbcrarbc", "xyxyxyxyxyxyzzzzzzzz", "wabba/wabba/wabba/wabba/woo/woo/woo", "a/bar/array/by/barrayar/bay", "barrayar/bar/by/barrayar/bay"}
+
+	for _, testString := range testStrings {
+		result, alphabetDict := encode(testString)
+		for _, char := range alphabetDict {
+			fmt.Print(char + ", ")
+		}
+		fmt.Println()
+		for _, t := range result {
+			fmt.Print(t)
+			fmt.Print(", ")
+		}
+		fmt.Println()
+		fmt.Println("decoded :", decode(result, alphabetDict))
+		fmt.Println("original:", testString)
+		fmt.Println("=====================================")
+	}
+	testString6 := "this/hat/is/his/hat/it/is/his/hat"
+	result, alphabetDict := encode(testString6)
 	for _, char := range alphabetDict {
-		fmt.Println(char)
+		fmt.Print(char + ", ")
 	}
+	fmt.Println()
 	for _, t := range result {
-		fmt.Println(t)
+		fmt.Print(t)
+		fmt.Print(", ")
 	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString)
-	fmt.Println("=====================================")
-	testString2 := "rararbcrarbc"
-	result, alphabetDict = encode(testString2)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString2)
-	fmt.Println("=====================================")
-	testString3 := "xyxyxyxyxyxyzzzzzzzz"
-	result, alphabetDict = encode(testString3)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString3)
-	fmt.Println("=====================================")
-	testString4 := "wabba/wabba/wabba/wabba/woo/woo/woo"
-	result, alphabetDict = encode(testString4)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString4)
-	fmt.Println("=====================================")
-	testString5 := "a/bar/array/by/barrayar/bay"
-	result, alphabetDict = encode(testString5)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString5)
-	fmt.Println("=====================================")
-	testString6 := "shhi/has/hhi//h/hash/hahish/hahha"
-	result, alphabetDict = encode(testString6)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
+	fmt.Println()
 	fmt.Println("decoded :", decode(result, alphabetDict))
 	result, alphabetDict = []int{6, 3, 4, 5, 2, 3, 1, 6, 2, 9, 11, 16, 12, 14, 4, 20, 10, 8, 23, 13}, []string{"a", "/", "h", "i", "s", "t"}
 	fmt.Println("decoded :", decode(result, alphabetDict))
@@ -74,35 +39,30 @@ func main() {
 	testString7 := "ratatatat/a/rat/at/a/rat"
 	result, alphabetDict = encode(testString7)
 	for _, char := range alphabetDict {
-		fmt.Println(char)
+		fmt.Print(char + ", ")
 	}
+	fmt.Println()
 	for _, t := range result {
-		fmt.Println(t)
+		fmt.Print(t)
+		fmt.Print(", ")
 	}
+	fmt.Println()
 	fmt.Println("decoded :", decode(result, alphabetDict))
 	result, alphabetDict = []int{3, 1, 4, 6, 8, 4, 2, 1, 2, 5, 10, 6, 11, 13, 6}, []string{"a", "/", "r", "t"}
 	fmt.Println("decoded :", decode(result, alphabetDict))
 	fmt.Println("original:", testString7)
 	fmt.Println("=====================================")
-	testString8 := "barrayar/bar/by/barrayar/bay"
-	result, alphabetDict = encode(testString8)
-	for _, char := range alphabetDict {
-		fmt.Println(char)
-	}
-	for _, t := range result {
-		fmt.Println(t)
-	}
-	fmt.Println("decoded :", decode(result, alphabetDict))
-	fmt.Println("original:", testString8)
-	fmt.Println("=====================================")
 	testString9 := "THIS/IS/HIS/HIT"
 	result, alphabetDict = encode(testString9)
 	for _, char := range alphabetDict {
-		fmt.Println(char)
+		fmt.Print(char + ", ")
 	}
+	fmt.Println()
 	for _, t := range result {
-		fmt.Println(t)
+		fmt.Print(t)
+		fmt.Print(", ")
 	}
+	fmt.Println()
 	fmt.Println("decoded :", decode(result, alphabetDict))
 	result, alphabetDict = []int{4, 5, 3, 1, 2, 8, 2, 7, 9, 7, 4}, []string{"S", "/", "I", "T", "H"}
 	fmt.Println("decoded :", decode(result, alphabetDict))
@@ -127,7 +87,7 @@ func encode(pattern string) ([]int, []string) {
 		} else if i == len(pattern) {
 			// in the case were we reach the end of the pattern
 			// and the currentPatternToCheck is in the dict so we
-			// add its index to the output
+			// add its index to the output and add nothing to the dict
 			output = append(output, foundIdx)
 			break
 		} else {
