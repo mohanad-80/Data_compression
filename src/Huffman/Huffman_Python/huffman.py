@@ -1,3 +1,4 @@
+import os
 import heapq
 import json
 from collections import Counter
@@ -91,7 +92,34 @@ def decompress(input_file, output_file):
         f.write(''.join(decoded_text))
 
 # Example Usage
-if __name__ == "__main__":
-    # input_text = "hello huffman"
-    compress("input.txt", "compressed.bin")
-    decompress("compressed.bin", "decompressed.txt")
+# if __name__ == "__main__":
+#     # input_text = "hello huffman"
+#     compress("input.txt", "compressed.bin")
+#     decompress("compressed.bin", "decompressed.txt")
+
+##############################################
+##############################################
+##############################################
+##############################################
+##############################################
+
+# Create directories if they don't exist
+compressed_dir = "compressed_texts"
+decompressed_dir = "decompressed_texts"
+os.makedirs(compressed_dir, exist_ok=True)
+os.makedirs(decompressed_dir, exist_ok=True)
+
+# Loop through files in the "texts" directory
+text_dir = "texts"
+for filename in os.listdir(text_dir):
+    if filename.endswith(".txt"):
+        input_file = os.path.join(text_dir, filename)
+        compressed_file = os.path.join(compressed_dir, filename[:-4] + ".bin")
+        decompressed_file = os.path.join(decompressed_dir, filename)
+
+        print(f"Compressing {filename}...")
+        compress(input_file, compressed_file)
+        print(f"Compression of {filename} complete.")
+        print(f"Decompressing {filename}...")
+        decompress(compressed_file, decompressed_file)
+        print(f"Decompression of {filename} complete.")
