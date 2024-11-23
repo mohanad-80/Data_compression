@@ -30,7 +30,7 @@ def generate_codes(node, prefix="", codes=None):
     if codes is None:
         codes = {}
     if node.char is not None:  # Leaf node
-        codes[node.char] = bitarray(prefix)  # Convert prefix to a bitarray
+        codes[node.char] = bitarray(prefix)
     else:
         generate_codes(node.left, prefix + "0", codes)
         generate_codes(node.right, prefix + "1", codes)
@@ -44,40 +44,30 @@ def compress(input_file, output_file):
     tree = build_huffman_tree(freq_table)
     codes = generate_codes(tree)
     
-    # Encode the input text as a bitarray
     compressed = bitarray()
     compressed.encode(codes, input_text)
     
-    # Write the frequency table and compressed bitstream
     with open(output_file, 'wb') as f:
-        # Serialize frequency table as JSON
         freq_table_bytes = json.dumps(freq_table).encode('utf-8')
         
-        # Write the length of the frequency table (4 bytes, fixed size)
         f.write(len(freq_table_bytes).to_bytes(4, 'big'))
         
-        # Write frequency table
         f.write(freq_table_bytes)
         
-        # Write compressed bitstream
         compressed.tofile(f)
 
 def decompress(input_file, output_file):
     with open(input_file, 'rb') as f:
-        # Read the length of the frequency table
         freq_table_length = int.from_bytes(f.read(4), 'big')
         
-        # Read the frequency table
         freq_table_bytes = f.read(freq_table_length)
         freq_table = json.loads(freq_table_bytes.decode('utf-8'))
         
-        # Read the compressed bitstream
         compressed_bitstream = bitarray()
         compressed_bitstream.fromfile(f)
     
     tree = build_huffman_tree(freq_table)
     
-    # Decode the bitstream
     decoded_text = []
     node = tree
     for bit in compressed_bitstream:
@@ -86,16 +76,13 @@ def decompress(input_file, output_file):
             decoded_text.append(node.char)
             node = tree
         if len(decoded_text) == sum(freq_table.values()):
-            break  # Stop when all characters are decoded
+            break  # avoid decoding padding bits
     
     with open(output_file, 'w') as f:
         f.write(''.join(decoded_text))
 
-# Example Usage
-# if __name__ == "__main__":
-#     # input_text = "hello huffman"
-#     compress("input.txt", "compressed.bin")
-#     decompress("compressed.bin", "decompressed.txt")
+compress("input.txt", "compressed.bin")
+decompress("compressed.bin", "decompressed.txt")
 
 ##############################################
 ##############################################
@@ -103,23 +90,23 @@ def decompress(input_file, output_file):
 ##############################################
 ##############################################
 
-# Create directories if they don't exist
-compressed_dir = "compressed_texts"
-decompressed_dir = "decompressed_texts"
-os.makedirs(compressed_dir, exist_ok=True)
-os.makedirs(decompressed_dir, exist_ok=True)
+# # Create directories if they don't exist
+# compressed_dir = "compressed_texts"
+# decompressed_dir = "decompressed_texts"
+# os.makedirs(compressed_dir, exist_ok=True)
+# os.makedirs(decompressed_dir, exist_ok=True)
 
-# Loop through files in the "texts" directory
-text_dir = "texts"
-for filename in os.listdir(text_dir):
-    if filename.endswith(".txt"):
-        input_file = os.path.join(text_dir, filename)
-        compressed_file = os.path.join(compressed_dir, filename[:-4] + ".bin")
-        decompressed_file = os.path.join(decompressed_dir, filename)
+# # Loop through files in the "texts" directory
+# text_dir = "texts"
+# for filename in os.listdir(text_dir):
+#     if filename.endswith(".txt"):
+#         input_file = os.path.join(text_dir, filename)
+#         compressed_file = os.path.join(compressed_dir, filename[:-4] + ".bin")
+#         decompressed_file = os.path.join(decompressed_dir, filename)
 
-        print(f"Compressing {filename}...")
-        compress(input_file, compressed_file)
-        print(f"Compression of {filename} complete.")
-        print(f"Decompressing {filename}...")
-        decompress(compressed_file, decompressed_file)
-        print(f"Decompression of {filename} complete.")
+#         print(f"Compressing {filename}...")
+#         compress(input_file, compressed_file)
+#         print(f"Compression of {filename} complete.")
+#         print(f"Decompressing {filename}...")
+#         decompress(compressed_file, decompressed_file)
+#         print(f"Decompression of {filename} complete.")
