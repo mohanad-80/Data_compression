@@ -6,3 +6,4 @@ This repo contains high-level implementation for different data compression algo
 - LZ78 (in Golang)
 - LZW  (in Golang and Java)
 - Huffman (in Golang)
+- Vector Quantization (in Python)

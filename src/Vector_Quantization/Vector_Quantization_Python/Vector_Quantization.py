@@ -250,11 +250,11 @@ def decompress_image(compressed_file, decompressed_image_path):
 
 # Example usage
 if __name__ == "__main__":
-    block_size = 2
-    codebook_size = 16
+    block_size = 4
+    codebook_size = 4
 
     images = ["fruit.bmp", "House.bmp", "photographer.bmp", "image.jpg"]
-    image_path = images[2]
+    image_path = images[0]
     compressed_file = (
         image_path[:-4] + "-b" + str(block_size) + "-c" + str(codebook_size) + ".bin"
     )
